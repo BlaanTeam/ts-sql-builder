@@ -37,37 +37,45 @@ class QueryBuilder {
   from(table: string, alias?: string) {
     this._table.name = table;
     this._table.alias = alias ?? table;
+    return this;
   }
 
   select(...columns: string[]) {
     this._fields.push(...columns);
+    return this;
   }
 
   where(condition: string) {
     this._conditions.push(condition);
+    return this;
   }
 
   andWhere = this.where;
 
   groupBy(...columns: string[]) {
     this._groupBy.push(...columns);
+    return this;
   }
 
   orderBy(order: Record<string, ORDER>) {
     this._order.push(...Object.entries(order));
+    return this;
   }
 
   offset(n: number) {
     this._offset = n;
+    return this;
   }
 
   limit(n: number) {
     this._limit = n;
+    return this;
   }
 
   join(joinTable: JoinTable) {
     if (!joinTable.condition) joinTable.condition = 'TRUE';
     this._joins.push(joinTable);
+    return this;
   }
 }
 
