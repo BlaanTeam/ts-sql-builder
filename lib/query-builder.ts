@@ -73,7 +73,14 @@ class QueryBuilder {
   }
 
   join(joinTable: JoinTable) {
-    if (!joinTable.condition) joinTable.condition = 'TRUE';
+    joinTable.condition ??= 'TRUE';
+    joinTable.alias ??= joinTable.name;
+
+    if (joinTable.select) {
+      if (joinTable.select === true) this._fields.push(joinTable.alias + '.*');
+      else this._fields.push(...joinTable.select);
+    }
+
     this._joins.push(joinTable);
     return this;
   }
