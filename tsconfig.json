@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+    "module": "CommonJS",                                /* Facilitates the utilization of a module manager in the compiled JavaScript code, CommonJS is supported and is a standard in Node.js */
+    "esModuleInterop": true,                             /* Enables the compilation of ES6 modules to CommonJS modules. */
+    "forceConsistentCasingInFileNames": true,            /* Enforces case-sensitive file naming */
+    "strict": true,                                      /* Enable all strict type-checking options. */
+    "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
+    "outDir": "./dist",                                  /* Destination directory for the compiled output */
+    "allowSyntheticDefaultImports": true,
+  }
+}
