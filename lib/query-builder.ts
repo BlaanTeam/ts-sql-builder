@@ -29,6 +29,7 @@ class QueryBuilder {
   private _offset: number = -1;
   private _limit: number = -1;
   private _joins: JoinTable[] = [];
+  private _raw: string = '';
 
   private _query: string = '';
 
@@ -83,6 +84,10 @@ class QueryBuilder {
 
     this._joins.push(joinTable);
     return this;
+  }
+
+  addRawSql(rawSql: string) {
+    this._raw = rawSql;
   }
 }
 
