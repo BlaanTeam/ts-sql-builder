@@ -3,19 +3,35 @@ function $AND(...conditions: string[]) {
 }
 
 function $OR(...conditions: string[]) {
-  return `(${conditions.join(' OR ')})`
+  return `(${conditions.join(' OR ')})`;
+}
+
+function $NOT(expr: string) {
+  return `NOT ${expr}`;
 }
 
 function $IN(elem: string, ...list: string[]) {
   return `${elem} IN (${list.join(', ')})`;
 }
 
-/*
-todo:
+function $BETWEEN(value: string, l: string | number, r: string | number) {
+  return `BETWEEN ${l} AND ${r}`;
+}
 
-- is null / not null
-- array contains
-- between
-- like
-- contains (like %x%)
-*/
+function $isNull(value: string) {
+  return `(${value} IS NULL)`;
+}
+
+function $notNull(value: string) {
+  return `(${value} IS NOT NULL)`;
+}
+
+export {
+  $AND,
+  $OR,
+  $NOT,
+  $IN,
+  $BETWEEN,
+  $isNull,
+  $notNull,
+};
