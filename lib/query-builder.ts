@@ -36,8 +36,7 @@ class QueryBuilder {
   constructor() {}
 
   from(table: string, alias?: string) {
-    this._table.name = table;
-    this._table.alias = alias ?? table;
+    this._table = { name: table, alias: alias ?? table };
     return this;
   }
 
