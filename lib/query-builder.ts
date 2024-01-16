@@ -64,10 +64,14 @@ class QueryBuilder {
     return this;
   }
 
-  count(column: string | Column = '*') {
-    if (typeof column === 'string') column = `COUNT(${column})`;
-    else column.name = `COUNT(${column.name})`;
+  private agg(func: string, column: string | Column) {
+    if (typeof column === 'string') column = `${func}(${column})`;
+    else column.name = `${func}(${column.name})`;
     return this.select(column);
+  }
+
+  count(column: string | Column = '*') {
+    return this.agg('COUNT', column);
   }
 
   countDistinct(column: string | Column) {
@@ -77,27 +81,19 @@ class QueryBuilder {
   }
 
   sum(column: string | Column) {
-    if (typeof column === 'string') column = `SUM(${column})`;
-    else column.name = `SUM(${column.name})`;
-    return this.select(column);
+    return this.agg('SUM', column);
   }
 
   avg(column: string | Column) {
-    if (typeof column === 'string') column = `AVG(${column})`;
-    else column.name = `AVG(${column.name})`;
-    return this.select(column);
+    return this.agg('AVG', column);
   }
 
   min(column: string | Column) {
-    if (typeof column === 'string') column = `MIN(${column})`;
-    else column.name = `MIN(${column.name})`;
-    return this.select(column);
+    return this.agg('MIN', column);
   }
 
   max(column: string | Column) {
-    if (typeof column === 'string') column = `MAX(${column})`;
-    else column.name = `MAX(${column.name})`;
-    return this.select(column);
+    return this.agg('MAX', column);
   }
 
   where(condition: string) {
