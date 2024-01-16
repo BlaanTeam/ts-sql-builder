@@ -85,6 +85,21 @@ class QueryBuilder {
     return this;
   }
 
+  innerJoin(joinTable: Omit<JoinTable, 'type'>) {
+    this.join({ ...joinTable, type: JoinType.INNER });
+    return this;
+  }
+
+  leftJoin(joinTable: Omit<JoinTable, 'type'>) {
+    this.join({ ...joinTable, type: JoinType.LEFT });
+    return this;
+  }
+
+  rightJoin(joinTable: Omit<JoinTable, 'type'>) {
+    this.join({ ...joinTable, type: JoinType.RIGHT });
+    return this;
+  }
+
   addRawSql(rawSql: string) {
     this._raw = rawSql;
   }
