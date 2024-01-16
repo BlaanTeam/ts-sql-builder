@@ -45,6 +45,36 @@ class QueryBuilder {
     return this;
   }
 
+  count(column: string = '*') {
+    this._fields.push(`COUNT(${column})`);
+    return this;
+  }
+
+  countDistinct(column: string) {
+    this._fields.push(`COUNT(DISTINCT ${column})`);
+    return this;
+  }
+
+  sum(column: string) {
+    this._fields.push(`SUM(${column})`);
+    return this;
+  }
+
+  avg(column: string) {
+    this._fields.push(`AVG(${column})`);
+    return this;
+  }
+
+  min(column: string) {
+    this._fields.push(`MIN(${column})`);
+    return this;
+  }
+
+  max(column: string) {
+    this._fields.push(`MAX(${column})`);
+    return this;
+  }
+
   where(condition: string) {
     this._conditions.push(condition);
     return this;
