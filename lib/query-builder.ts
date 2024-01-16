@@ -57,8 +57,15 @@ class QueryBuilder {
     return this;
   }
 
-  orderBy(order: Record<string, ORDER>) {
-    this._order.push(...Object.entries(order));
+  orderBy(order: string | string[] | Record<string, ORDER>) {
+    if (typeof order === 'string') {
+      this._order.push([order, ORDER.ASC]);
+    } else if (Array.isArray(order)) {
+      this._order.push(...order.map((o) => [o, ORDER.ASC] as [string, ORDER]));
+    } else {
+      this._order.push(...Object.entries(order));
+    }
+
     return this;
   }
 
