@@ -3,10 +3,15 @@ interface Table {
   alias?: string;
 }
 
+interface Column {
+  name: string;
+  alias?: string;
+}
+
 interface JoinTable extends Table {
   type: JoinType;
   condition?: string;
-  select?: boolean | string[];
+  select?: boolean | (string | Column)[];
 }
 
 enum JoinType {
@@ -21,7 +26,7 @@ enum ORDER {
 }
 
 class QueryBuilder {
-  private _fields: string[] = [];
+  private _fields: Column[] = [];
   private _table: Table = { name: '' };
   private _conditions: string[] = [];
   private _groupBy: string[] = [];
@@ -40,39 +45,59 @@ class QueryBuilder {
     return this;
   }
 
-  select(...columns: string[]) {
-    this._fields.push(...columns);
+  select(column: string | Column): this;
+  select(columns: (Column | string)[]): this;
+
+  select(selection: string | Column | (string | Column)[]) {
+    if (typeof selection === 'string') {
+      this._fields.push({ name: selection });
+    } else if (Array.isArray(selection)) {
+      this._fields.push(
+        ...selection.map((column) => {
+          return typeof column === 'string' ? { name: column } : column;
+        }),
+      );
+    } else {
+      this._fields.push(selection);
+    }
+
     return this;
   }
 
-  count(column: string = '*') {
-    this._fields.push(`COUNT(${column})`);
-    return this;
+  count(column: string | Column = '*') {
+    if (typeof column === 'string') column = `COUNT(${column})`;
+    else column.name = `COUNT(${column.name})`;
+    return this.select(column);
   }
 
-  countDistinct(column: string) {
-    this._fields.push(`COUNT(DISTINCT ${column})`);
-    return this;
+  countDistinct(column: string | Column) {
+    if (typeof column === 'string') column = `COUNT(DISTINCT ${column})`;
+    else column.name = `COUNT(DISTINCT ${column.name})`;
+    return this.select(column);
   }
 
-  sum(column: string) {
-    this._fields.push(`SUM(${column})`);
-    return this;
+  sum(column: string | Column) {
+    if (typeof column === 'string') column = `SUM(${column})`;
+    else column.name = `SUM(${column.name})`;
+    return this.select(column);
   }
 
-  avg(column: string) {
-    this._fields.push(`AVG(${column})`);
-    return this;
+  avg(column: string | Column) {
+    if (typeof column === 'string') column = `AVG(${column})`;
+    else column.name = `AVG(${column.name})`;
+    return this.select(column);
   }
 
-  min(column: string) {
-    this._fields.push(`MIN(${column})`);
-    return this;
+  min(column: string | Column) {
+    if (typeof column === 'string') column = `MIN(${column})`;
+    else column.name = `MIN(${column.name})`;
+    return this.select(column);
   }
 
-  max(column: string) {
-    this._fields.push(`MAX(${column})`);
-    return this;
+  max(column: string | Column) {
+    if (typeof column === 'string') column = `MAX(${column})`;
+    else column.name = `MAX(${column.name})`;
+    return this.select(column);
   }
 
   where(condition: string) {
@@ -114,8 +139,8 @@ class QueryBuilder {
     joinTable.alias ??= joinTable.name;
 
     if (joinTable.select) {
-      if (joinTable.select === true) this._fields.push(joinTable.alias + '.*');
-      else this._fields.push(...joinTable.select);
+      if (joinTable.select === true) this.select(joinTable.alias + '.*');
+      else this.select(joinTable.select);
     }
 
     this._joins.push(joinTable);
@@ -123,22 +148,20 @@ class QueryBuilder {
   }
 
   innerJoin(joinTable: Omit<JoinTable, 'type'>) {
-    this.join({ ...joinTable, type: JoinType.INNER });
-    return this;
+    return this.join({ ...joinTable, type: JoinType.INNER });
   }
 
   leftJoin(joinTable: Omit<JoinTable, 'type'>) {
-    this.join({ ...joinTable, type: JoinType.LEFT });
-    return this;
+    return this.join({ ...joinTable, type: JoinType.LEFT });
   }
 
   rightJoin(joinTable: Omit<JoinTable, 'type'>) {
-    this.join({ ...joinTable, type: JoinType.RIGHT });
-    return this;
+    return this.join({ ...joinTable, type: JoinType.RIGHT });
   }
 
   addRawSql(rawSql: string) {
     this._raw = rawSql;
+    return this;
   }
 }
 
