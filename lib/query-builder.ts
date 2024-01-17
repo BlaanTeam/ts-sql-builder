@@ -11,7 +11,11 @@ interface Column {
 interface JoinTable extends Table {
   type: JoinType;
   condition?: string;
-  select?: boolean | (string | Column)[];
+  select?:
+    | boolean
+    | string
+    | Record<string, string>
+    | (string | Record<string, string>)[];
 }
 
 enum JoinType {
@@ -45,55 +49,53 @@ class QueryBuilder {
     return this;
   }
 
-  select(column: string | Column): this;
-  select(columns: (Column | string)[]): this;
-
-  select(selection: string | Column | (string | Column)[]) {
-    if (typeof selection === 'string') {
+  select(
+    selection:
+      | string
+      | Record<string, string>
+      | (string | Record<string, string>)[],
+  ) {
+    if (Array.isArray(selection)) {
+      selection.forEach((column) => this.select(column));
+    } else if (typeof selection === 'string') {
       this._fields.push({ name: selection });
-    } else if (Array.isArray(selection)) {
-      this._fields.push(
-        ...selection.map((column) => {
-          return typeof column === 'string' ? { name: column } : column;
-        }),
-      );
     } else {
-      this._fields.push(selection);
+      Object.entries(selection).forEach(([name, alias]: [string, string]) => {
+        this._fields.push({ name, alias });
+      });
     }
 
     return this;
   }
 
-  private agg(func: string, column: string | Column) {
-    if (typeof column === 'string') column = `${func}(${column})`;
-    else column.name = `${func}(${column.name})`;
-    return this.select(column);
+  private agg(func: string, column: string, alias: string | undefined) {
+    const name = `${func}(${column})`;
+    return this.select(alias ? { [name]: alias } : name);
   }
 
-  count(column: string | Column = '*') {
-    return this.agg('COUNT', column);
+  count(column: string = '*', alias?: string) {
+    return this.agg('COUNT', column, alias);
   }
 
-  countDistinct(column: string | Column) {
-    if (typeof column === 'string') column = `COUNT(DISTINCT ${column})`;
-    else column.name = `COUNT(DISTINCT ${column.name})`;
-    return this.select(column);
+  countDistinct(column: string, alias?: string) {
+    const name = `COUNT(DISTINCT ${column})`;
+    return this.select(alias ? { [name]: alias } : name);
   }
 
-  sum(column: string | Column) {
-    return this.agg('SUM', column);
+  sum(column: string, alias?: string) {
+    return this.agg('SUM', column, alias);
   }
 
-  avg(column: string | Column) {
-    return this.agg('AVG', column);
+  avg(column: string, alias?: string) {
+    return this.agg('AVG', column, alias);
   }
 
-  min(column: string | Column) {
-    return this.agg('MIN', column);
+  min(column: string, alias?: string) {
+    return this.agg('MIN', column, alias);
   }
 
-  max(column: string | Column) {
-    return this.agg('MAX', column);
+  max(column: string, alias?: string) {
+    return this.agg('MAX', column, alias);
   }
 
   where(condition: string) {
@@ -135,8 +137,8 @@ class QueryBuilder {
     joinTable.alias ??= joinTable.name;
 
     if (joinTable.select) {
-      if (joinTable.select === true) this.select(joinTable.alias + '.*');
-      else this.select(joinTable.select);
+      if (joinTable.select === true) joinTable.select = joinTable.alias + '.*';
+      this.select(joinTable.select);
     }
 
     this._joins.push(joinTable);
