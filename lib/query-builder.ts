@@ -186,6 +186,22 @@ class QueryBuilder {
   getSql() {
     return this._query;
   }
+
+  clear() {
+    this._fields = [];
+    this._table = { name: '' };
+    this._where = [];
+    this._groupBy = [];
+    this._having = [];
+    this._order = [];
+    this._offset = -1;
+    this._limit = -1;
+    this._joins = [];
+    this._raw = '';
+    this._query = '';
+    return this;
+  }
+}
 }
 
 export { QueryBuilder, Table, JoinTable, JoinType, ORDER };
