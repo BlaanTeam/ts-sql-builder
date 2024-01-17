@@ -99,8 +99,8 @@ class QueryBuilder {
     return this.agg('MAX', column, alias);
   }
 
-  where(condition: string) {
-    this._where.push(condition);
+  where(...conditions: string[]) {
+    this._where.push(...conditions);
     return this;
   }
 
@@ -111,8 +111,8 @@ class QueryBuilder {
     return this;
   }
 
-  having(condition: string) {
-    this._having.push(condition);
+  having(...conditions: string[]) {
+    this._having.push(...conditions);
   }
 
   andHaving = this.having;
