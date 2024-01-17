@@ -179,7 +179,36 @@ class QueryBuilder {
   }
 
   build() {
-    // todo: build sql query
+    this._query += 'SELECT ';
+
+    const selection = this._fields.map((field) => {
+      return field.name + (field.alias ? ` AS ${field.alias}` : '');
+    });
+
+    this._query += selection.join(', ');
+
+    if (this._table.name) {
+      this._query += ` FROM "${this._table.name}" ${this._table.alias}`;
+    }
+
+    // todo: handle joins here
+
+    if (this._where.length) {
+      this._query += ` WHERE ${this._where.map((c) => `(${c})`).join(' AND ')}`;
+    }
+
+    if (this._groupBy.length) {
+      this._query += ` GROUP BY ${this._groupBy.join(', ')}`;
+    }
+
+    if (this._having.length) {
+      this._query += ` HAVING ${this._having
+        .map((c) => `(${c})`)
+        .join(' AND ')}`;
+    }
+
+    // todo: handle order, offset, limit & raw here
+
     return this;
   }
 
@@ -201,7 +230,6 @@ class QueryBuilder {
     this._query = '';
     return this;
   }
-}
 }
 
 export { QueryBuilder, Table, JoinTable, JoinType, ORDER };
