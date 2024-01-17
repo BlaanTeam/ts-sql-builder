@@ -32,8 +32,9 @@ enum ORDER {
 class QueryBuilder {
   private _fields: Column[] = [];
   private _table: Table = { name: '' };
-  private _conditions: string[] = [];
+  private _where: string[] = [];
   private _groupBy: string[] = [];
+  private _having: string[] = [];
   private _order: [string, ORDER][] = [];
   private _offset: number = -1;
   private _limit: number = -1;
@@ -99,7 +100,7 @@ class QueryBuilder {
   }
 
   where(condition: string) {
-    this._conditions.push(condition);
+    this._where.push(condition);
     return this;
   }
 
@@ -109,6 +110,12 @@ class QueryBuilder {
     this._groupBy.push(...columns);
     return this;
   }
+
+  having(condition: string) {
+    this._having.push(condition);
+  }
+
+  andHaving = this.having;
 
   orderBy(order: string | string[] | Record<string, ORDER>) {
     if (typeof order === 'string') {
