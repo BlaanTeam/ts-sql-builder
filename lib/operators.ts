@@ -14,8 +14,19 @@ function $NOT(expr: string) {
   return `NOT ${expr}`;
 }
 
-function $IN(elem: string, ...list: string[]) {
-  return `${elem} IN (${list.join(', ')})`;
+function $IN(
+  elem: string,
+  list: string | string[] | QueryBuilder | ((qb: QueryBuilder) => QueryBuilder),
+) {
+  const _list =
+    typeof list === 'string'
+      ? list
+      : Array.isArray(list)
+      ? `(${list.join(', ')})`
+      : list instanceof QueryBuilder
+      ? `(${list.getSql()})`
+      : `(${list(new QueryBuilder()).getSql()})`;
+  return `${elem} IN ${list}`;
 }
 
 function $BETWEEN(value: string, l: string | number, r: string | number) {
