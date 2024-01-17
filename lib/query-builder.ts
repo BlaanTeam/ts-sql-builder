@@ -113,6 +113,7 @@ class QueryBuilder {
 
   having(...conditions: string[]) {
     this._having.push(...conditions);
+    return this;
   }
 
   andHaving = this.having;
