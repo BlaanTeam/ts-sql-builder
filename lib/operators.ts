@@ -1,3 +1,7 @@
+import { QueryBuilder } from './query-builder';
+
+type ComparisonOperator = '=' | '<>' | '!=' | '>' | '>=' | '<' | '<=';
+
 function $AND(...conditions: string[]) {
   return `(${conditions.join(' AND ')})`;
 }
@@ -18,6 +22,34 @@ function $BETWEEN(value: string, l: string | number, r: string | number) {
   return `BETWEEN ${l} AND ${r}`;
 }
 
+function $ALL(
+  value: string,
+  operator: ComparisonOperator,
+  subQuery: string | QueryBuilder | ((qb: QueryBuilder) => QueryBuilder),
+) {
+  const sub =
+    typeof subQuery === 'string'
+      ? subQuery
+      : subQuery instanceof QueryBuilder
+      ? subQuery.getSql()
+      : subQuery(new QueryBuilder()).getSql();
+  return `${value} ${operator} ALL (${sub})`;
+}
+
+function $ANY(
+  value: string,
+  operator: ComparisonOperator,
+  subQuery: string | QueryBuilder | ((qb: QueryBuilder) => QueryBuilder),
+) {
+  const sub =
+    typeof subQuery === 'string'
+      ? subQuery
+      : subQuery instanceof QueryBuilder
+      ? subQuery.getSql()
+      : subQuery(new QueryBuilder()).getSql();
+  return `${value} ${operator} ANY (${sub})`;
+}
+
 function $isNull(value: string) {
   return `(${value} IS NULL)`;
 }
@@ -27,6 +59,7 @@ function $notNull(value: string) {
 }
 
 export {
+  ComparisonOperator,
   $AND,
   $OR,
   $NOT,
@@ -34,4 +67,6 @@ export {
   $BETWEEN,
   $isNull,
   $notNull,
+  $ALL,
+  $ANY,
 };
