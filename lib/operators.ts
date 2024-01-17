@@ -24,8 +24,8 @@ function $IN(
       : Array.isArray(list)
       ? `(${list.join(', ')})`
       : list instanceof QueryBuilder
-      ? `(${list.getSql()})`
-      : `(${list(new QueryBuilder()).getSql()})`;
+      ? `(${list.build().getSql()})`
+      : `(${list(new QueryBuilder()).build().getSql()})`;
   return `${elem} IN ${list}`;
 }
 
@@ -42,8 +42,8 @@ function $ALL(
     typeof subQuery === 'string'
       ? subQuery
       : subQuery instanceof QueryBuilder
-      ? subQuery.getSql()
-      : subQuery(new QueryBuilder()).getSql();
+      ? subQuery.build().getSql()
+      : subQuery(new QueryBuilder()).build().getSql();
   return `${value} ${operator} ALL (${sub})`;
 }
 
@@ -57,7 +57,7 @@ function $ANY(
       ? subQuery
       : subQuery instanceof QueryBuilder
       ? subQuery.getSql()
-      : subQuery(new QueryBuilder()).getSql();
+      : subQuery(new QueryBuilder()).build().getSql();
   return `${value} ${operator} ANY (${sub})`;
 }
 

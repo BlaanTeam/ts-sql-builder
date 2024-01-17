@@ -164,9 +164,26 @@ class QueryBuilder {
     return this.join({ ...joinTable, type: JoinType.RIGHT });
   }
 
+  subQuery(): QueryBuilder;
+  subQuery(cb: (qb: QueryBuilder) => QueryBuilder): string;
+  subQuery(cb?: (qb: QueryBuilder) => QueryBuilder) {
+    return cb
+      ? `(${cb(new QueryBuilder()).build().getSql()})`
+      : new QueryBuilder();
+  }
+
   addRawSql(rawSql: string) {
     this._raw = rawSql;
     return this;
+  }
+
+  build() {
+    // todo: build sql query
+    return this;
+  }
+
+  getSql() {
+    return this._query;
   }
 }
 
