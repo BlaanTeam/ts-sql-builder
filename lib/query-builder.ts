@@ -1,39 +1,8 @@
-import { FormatOptionsWithLanguage, format } from 'sql-formatter';
+import { format } from 'sql-formatter';
+import { Column, FormatOptions, JoinTable, Table } from './qb.interfaces';
+import { JoinType, ORDER } from './qb.enums';
 
-interface Table {
-  name: string;
-  alias?: string;
-}
-
-interface Column {
-  name: string;
-  alias?: string;
-}
-
-interface JoinTable extends Table {
-  type: 'LEFT' | 'RIGHT' | 'INNER';
-  condition?: string;
-  select?:
-    | boolean
-    | string
-    | Record<string, string>
-    | (string | Record<string, string>)[];
-}
-
-enum JoinType {
-  LEFT = 'LEFT',
-  RIGHT = 'RIGHT',
-  INNER = 'INNER',
-}
-
-enum ORDER {
-  DESC = 'DESC',
-  ASC = 'ASC',
-}
-
-type FormatOptions = FormatOptionsWithLanguage;
-
-class QueryBuilder {
+export class QueryBuilder {
   private _fields: Column[] = [];
   private _table: Table = { name: '' };
   private _where: string[] = [];
@@ -267,14 +236,3 @@ class QueryBuilder {
     return this;
   }
 }
-
-export {
-  QueryBuilder,
-  Table,
-  Column,
-  JoinTable,
-  JoinType,
-  ORDER,
-  FormatOptions,
-  createQueryBuilder,
-};
