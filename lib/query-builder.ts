@@ -1,3 +1,5 @@
+import { FormatOptionsWithLanguage, format } from 'sql-formatter';
+
 interface Table {
   name: string;
   alias?: string;
@@ -28,6 +30,8 @@ enum ORDER {
   DESC = 'DESC',
   ASC = 'ASC',
 }
+
+type FormatOptions = FormatOptionsWithLanguage;
 
 class QueryBuilder {
   private _fields: Column[] = [];
@@ -212,6 +216,11 @@ class QueryBuilder {
     return this;
   }
 
+  format(formatOptions?: FormatOptions): this | never {
+    this._query = format(this._query, formatOptions);
+    return this;
+  }
+
   getSql() {
     return this._query;
   }
@@ -243,5 +252,6 @@ export {
   JoinTable,
   JoinType,
   ORDER,
+  FormatOptions,
   createQueryBuilder,
 };
