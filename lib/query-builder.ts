@@ -268,10 +268,6 @@ class QueryBuilder {
   }
 }
 
-function createQueryBuilder() {
-  return new QueryBuilder();
-}
-
 export {
   QueryBuilder,
   Table,
