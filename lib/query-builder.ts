@@ -232,4 +232,16 @@ class QueryBuilder {
   }
 }
 
-export { QueryBuilder, Table, JoinTable, JoinType, ORDER };
+function createQueryBuilder() {
+  return new QueryBuilder();
+}
+
+export {
+  QueryBuilder,
+  Table,
+  Column,
+  JoinTable,
+  JoinType,
+  ORDER,
+  createQueryBuilder,
+};
