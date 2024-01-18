@@ -35,7 +35,7 @@ class QueryBuilder {
   private _where: string[] = [];
   private _groupBy: string[] = [];
   private _having: string[] = [];
-  private _order: [string, ORDER][] = [];
+  private _order: [string, 'ASC' | 'DESC'][] = [];
   private _offset: number = -1;
   private _limit: number = -1;
   private _joins: JoinTable[] = [];
@@ -118,7 +118,7 @@ class QueryBuilder {
 
   andHaving = this.having;
 
-  orderBy(order: string | string[] | Record<string, ORDER>) {
+  orderBy(order: string | string[] | Record<string, 'ASC' | 'DESC'>) {
     if (typeof order === 'string') {
       this._order.push([order, ORDER.ASC]);
     } else if (Array.isArray(order)) {
