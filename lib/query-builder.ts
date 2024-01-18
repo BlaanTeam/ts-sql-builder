@@ -221,7 +221,24 @@ class QueryBuilder {
         .join(' AND ')}`;
     }
 
-    // todo: handle order, offset, limit & raw here
+    if (this._order.length) {
+      this._query += ` ORDER BY `;
+      this._query += this._order
+        .map(([col, order]) => `${col} ${order}`)
+        .join(', ');
+    }
+
+    if (this._limit !== -1) {
+      this._query += ` LIMIT ${this._limit}`;
+    }
+
+    if (this._offset !== -1) {
+      this._query += ` OFFSET ${this._offset}`;
+    }
+
+    if (this._raw) {
+      this._query += ` ${this._raw}`;
+    }
 
     return this;
   }
