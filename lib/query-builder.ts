@@ -11,7 +11,7 @@ interface Column {
 }
 
 interface JoinTable extends Table {
-  type: JoinType;
+  type: 'LEFT' | 'RIGHT' | 'INNER';
   condition?: string;
   select?:
     | boolean
