@@ -59,14 +59,20 @@ class QueryBuilder {
       | string
       | Record<string, string>
       | (string | Record<string, string>)[],
+    fromTable?: string,
   ) {
     if (Array.isArray(selection)) {
-      selection.forEach((column) => this.select(column));
+      selection.forEach((column) => this.select(column, fromTable));
     } else if (typeof selection === 'string') {
-      this._fields.push({ name: selection });
+      this._fields.push({
+        name: fromTable ? `${fromTable}.${selection}` : selection,
+      });
     } else {
       Object.entries(selection).forEach(([name, alias]: [string, string]) => {
-        this._fields.push({ name, alias });
+        this._fields.push({
+          name: fromTable ? `${fromTable}.${name}` : name,
+          alias,
+        });
       });
     }
 
@@ -149,8 +155,8 @@ class QueryBuilder {
     joinTable.alias ??= joinTable.name;
 
     if (joinTable.select) {
-      if (joinTable.select === true) joinTable.select = joinTable.alias + '.*';
-      this.select(joinTable.select);
+      if (joinTable.select === true) joinTable.select = '*';
+      this.select(joinTable.select, joinTable.alias);
     }
 
     this._joins.push(joinTable);
