@@ -201,7 +201,11 @@ class QueryBuilder {
       this._query += ` FROM "${this._table.name}" ${this._table.alias}`;
     }
 
-    // todo: handle joins here
+    this._joins.forEach(({ name, alias, type, condition }) => {
+      alias ??= name;
+      condition ??= 'TRUE';
+      this._query += ` ${type} JOIN "${name}" ${alias} ON (${condition})`;
+    });
 
     if (this._where.length) {
       this._query += ` WHERE ${this._where.map((c) => `(${c})`).join(' AND ')}`;
