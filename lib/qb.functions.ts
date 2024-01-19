@@ -8,6 +8,6 @@ export function $concat(...strings: string[]) {
   return `CONCAT(${strings.join(', ')})`;
 }
 
-export function createQueryBuilder() {
-  return new QueryBuilder();
+export function createQueryBuilder(table?: string, alias?: string) {
+  return new QueryBuilder(table, alias);
 }

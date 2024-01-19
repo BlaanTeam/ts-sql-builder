@@ -16,7 +16,9 @@ export class QueryBuilder {
 
   private _query: string = '';
 
-  constructor() {}
+  constructor(table?: string, alias?: string) {
+    if (table) this.from(table, alias);
+  }
 
   from(table: string, alias?: string) {
     this._table = { name: table, alias: alias ?? table };
