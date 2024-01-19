@@ -6,6 +6,7 @@ export class QueryBuilder {
   private _queryType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' = 'READ';
   private _insertColumns: string[] = [];
   private _values: any[][] = [];
+  private _updatedColumns: Record<string, any> = {};
   private _fields: Column[] = [];
   private _table: Table = { name: '' };
   private _where: string[] = [];
@@ -36,6 +37,27 @@ export class QueryBuilder {
 
   values(...values: any[][]) {
     this._values.push(...values);
+    return this;
+  }
+
+  update(table: string, data: Record<string, any> = {}) {
+    this._queryType = 'UPDATE';
+    this.from(table);
+    return this.set(data);
+  }
+
+  set(column: string, value: any): this;
+  set(data: Record<string, any>): this;
+
+  set(data: string | Record<string, any>, value?: any) {
+    if (typeof data === 'string') {
+      this._updatedColumns[data] = value;
+    } else {
+      this._updatedColumns = {
+        ...this._updatedColumns,
+        ...data,
+      };
+    }
     return this;
   }
 
@@ -199,6 +221,24 @@ export class QueryBuilder {
       }
 
       case 'UPDATE': {
+        this._query += `UPDATE ${this._table.name} SET `;
+
+        const data = Object.entries(this._updatedColumns).map(
+          ([column, value]) => {
+            let stringified = JSON.stringify(value);
+            if (typeof value === 'object') stringified = `'${stringified}'`;
+            return `${column} = ${stringified}`;
+          },
+        );
+
+        this._query += data.join(', ');
+
+        if (this._where.length) {
+          this._query += ` WHERE ${this._where
+            .map((c) => `(${c})`)
+            .join(' AND ')}`;
+        }
+
         break;
       }
 
@@ -277,6 +317,7 @@ export class QueryBuilder {
     this._queryType = 'READ';
     this._insertColumns = [];
     this._values = [];
+    this._updatedColumns = {};
     this._fields = [];
     this._table = { name: '' };
     this._where = [];
