@@ -61,6 +61,11 @@ export class QueryBuilder {
     return this;
   }
 
+  delete(table: string) {
+    this._queryType = 'DELETE';
+    return this.from(table);
+  }
+
   from(table: string, alias?: string) {
     this._table = { name: table, alias: alias ?? table };
     return this;
@@ -200,6 +205,12 @@ export class QueryBuilder {
     return this;
   }
 
+  private handleWhereConditions() {
+    if (this._where.length) {
+      this._query += ` WHERE ${this._where.map((c) => `(${c})`).join(' AND ')}`;
+    }
+  }
+
   build() {
     switch (this._queryType) {
       case 'CREATE': {
@@ -232,17 +243,14 @@ export class QueryBuilder {
         );
 
         this._query += data.join(', ');
-
-        if (this._where.length) {
-          this._query += ` WHERE ${this._where
-            .map((c) => `(${c})`)
-            .join(' AND ')}`;
-        }
+        this.handleWhereConditions();
 
         break;
       }
 
       case 'DELETE': {
+        this._query += `DELETE FROM ${this._table.name}`;
+        this.handleWhereConditions();
         break;
       }
 
@@ -265,11 +273,7 @@ export class QueryBuilder {
           this._query += ` ${type} JOIN "${name}" ${alias} ON (${condition})`;
         });
 
-        if (this._where.length) {
-          this._query += ` WHERE ${this._where
-            .map((c) => `(${c})`)
-            .join(' AND ')}`;
-        }
+        this.handleWhereConditions();
 
         if (this._groupBy.length) {
           this._query += ` GROUP BY ${this._groupBy.join(', ')}`;
