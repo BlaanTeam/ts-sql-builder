@@ -29,6 +29,11 @@ export class QueryBuilder {
     return this.from(table);
   }
 
+  columns(...columns: string[]) {
+    this._insertColumns = columns;
+    return this;
+  }
+
   values(...values: any[][]) {
     this._values.push(...values);
     return this;
