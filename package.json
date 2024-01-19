@@ -3,5 +3,8 @@
     "nodemon": "^3.0.2",
     "sql-formatter": "^15.0.2",
     "ts-node": "^10.9.2"
+  },
+  "scripts": {
+    "build": "npx tsc"
   }
 }
