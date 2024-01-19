@@ -3,6 +3,9 @@ import { Column, FormatOptions, JoinTable, Table } from './qb.interfaces';
 import { JoinType, ORDER } from './qb.enums';
 
 export class QueryBuilder {
+  private _queryType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' = 'READ';
+  private _insertColumns: string[] = [];
+  private _values: any[][] = [];
   private _fields: Column[] = [];
   private _table: Table = { name: '' };
   private _where: string[] = [];
@@ -18,6 +21,17 @@ export class QueryBuilder {
 
   constructor(table?: string, alias?: string) {
     if (table) this.from(table, alias);
+  }
+
+  insertInto(table: string, ...columns: string[]) {
+    this._queryType = 'CREATE';
+    this._insertColumns = columns;
+    return this.from(table);
+  }
+
+  values(...values: any[][]) {
+    this._values.push(...values);
+    return this;
   }
 
   from(table: string, alias?: string) {
@@ -160,51 +174,82 @@ export class QueryBuilder {
   }
 
   build() {
-    this._query += 'SELECT ';
+    switch (this._queryType) {
+      case 'CREATE': {
+        this._query += `INSERT INTO ${this._table.name}`;
+        this._query += ` (${this._insertColumns.join(', ')})`;
+        this._query += ` VALUES `;
 
-    const selection = this._fields.map((field) => {
-      return field.name + (field.alias ? ` AS ${field.alias}` : '');
-    });
+        const listOfValues = this._values.map((values) => {
+          const formattedValues = values.map((value) => {
+            let stringified = JSON.stringify(value);
+            if (typeof value === 'object') stringified = `'${stringified}'`;
+            return stringified;
+          });
+          return `(${formattedValues.join(', ')})`;
+        });
 
-    this._query += selection.join(', ');
+        this._query += `${listOfValues.join(', ')}`;
+        break;
+      }
 
-    if (this._table.name) {
-      this._query += ` FROM "${this._table.name}" ${this._table.alias}`;
-    }
+      case 'UPDATE': {
+        break;
+      }
 
-    this._joins.forEach(({ name, alias, type, condition }) => {
-      alias ??= name;
-      condition ??= 'TRUE';
-      this._query += ` ${type} JOIN "${name}" ${alias} ON (${condition})`;
-    });
+      case 'DELETE': {
+        break;
+      }
 
-    if (this._where.length) {
-      this._query += ` WHERE ${this._where.map((c) => `(${c})`).join(' AND ')}`;
-    }
+      default: // 'READ'
+        this._query += 'SELECT ';
 
-    if (this._groupBy.length) {
-      this._query += ` GROUP BY ${this._groupBy.join(', ')}`;
-    }
+        const selection = this._fields.map((field) => {
+          return field.name + (field.alias ? ` AS ${field.alias}` : '');
+        });
 
-    if (this._having.length) {
-      this._query += ` HAVING ${this._having
-        .map((c) => `(${c})`)
-        .join(' AND ')}`;
-    }
+        this._query += selection.join(', ');
 
-    if (this._order.length) {
-      this._query += ` ORDER BY `;
-      this._query += this._order
-        .map(([col, order]) => `${col} ${order}`)
-        .join(', ');
-    }
+        if (this._table.name) {
+          this._query += ` FROM "${this._table.name}" ${this._table.alias}`;
+        }
 
-    if (this._limit !== -1) {
-      this._query += ` LIMIT ${this._limit}`;
-    }
+        this._joins.forEach(({ name, alias, type, condition }) => {
+          alias ??= name;
+          condition ??= 'TRUE';
+          this._query += ` ${type} JOIN "${name}" ${alias} ON (${condition})`;
+        });
 
-    if (this._offset !== -1) {
-      this._query += ` OFFSET ${this._offset}`;
+        if (this._where.length) {
+          this._query += ` WHERE ${this._where
+            .map((c) => `(${c})`)
+            .join(' AND ')}`;
+        }
+
+        if (this._groupBy.length) {
+          this._query += ` GROUP BY ${this._groupBy.join(', ')}`;
+        }
+
+        if (this._having.length) {
+          this._query += ` HAVING ${this._having
+            .map((c) => `(${c})`)
+            .join(' AND ')}`;
+        }
+
+        if (this._order.length) {
+          this._query += ` ORDER BY `;
+          this._query += this._order
+            .map(([col, order]) => `${col} ${order}`)
+            .join(', ');
+        }
+
+        if (this._limit !== -1) {
+          this._query += ` LIMIT ${this._limit}`;
+        }
+
+        if (this._offset !== -1) {
+          this._query += ` OFFSET ${this._offset}`;
+        }
     }
 
     if (this._raw) {
@@ -224,6 +269,9 @@ export class QueryBuilder {
   }
 
   clear() {
+    this._queryType = 'READ';
+    this._insertColumns = [];
+    this._values = [];
     this._fields = [];
     this._table = { name: '' };
     this._where = [];
