@@ -2,17 +2,21 @@
   "name": "ts-sql-builder",
   "version": "0.0.5",
   "description": "A SQL query builder that lets you build and have full control over your query strings using a straightforward api",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "npx tsc"
+    "build": "tsup",
+    "test": "echo \"Error: no tests are specified in this version\" && exit 1"
   },
   "homepage": "https://github.com/BlaanTeam/ts-query-builder#readme",
   "devDependencies": {
     "nodemon": "^3.0.2",
-    "ts-node": "^10.9.2"
+    "ts-node": "^10.9.2",
+    "tsup": "^8.0.1"
   },
   "dependencies": {
     "sql-formatter": "^15.0.2"
