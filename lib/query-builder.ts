@@ -96,6 +96,8 @@ export class QueryBuilder {
     return this;
   }
 
+  addSelect = this.select;
+
   private agg(func: string, column: string, alias: string | undefined) {
     const name = `${func}(${column})`;
     return this.select(alias ? { [name]: alias } : name);
@@ -215,13 +217,16 @@ export class QueryBuilder {
     switch (this._queryType) {
       case 'CREATE': {
         this._query += `INSERT INTO ${this._table.name}`;
-        this._query += ` (${this._insertColumns.join(', ')})`;
+        this._query += ` (${this._insertColumns
+          .map((c) => `"${c}"`)
+          .join(', ')})`;
         this._query += ` VALUES `;
 
         const listOfValues = this._values.map((values) => {
           const formattedValues = values.map((value) => {
             let stringified = JSON.stringify(value);
             if (typeof value === 'object') stringified = `'${stringified}'`;
+            if (typeof value === 'string') stringified = `'${value}'`;
             return stringified;
           });
           return `(${formattedValues.join(', ')})`;
@@ -238,7 +243,8 @@ export class QueryBuilder {
           ([column, value]) => {
             let stringified = JSON.stringify(value);
             if (typeof value === 'object') stringified = `'${stringified}'`;
-            return `${column} = ${stringified}`;
+            if (typeof value === 'string') stringified = `'${value}'`;
+            return `"${column}" = ${stringified}`;
           },
         );
 
