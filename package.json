@@ -1,6 +1,6 @@
 {
   "name": "ts-sql-builder",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A SQL query builder that lets you build and have full control over your query strings using a straightforward api",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
