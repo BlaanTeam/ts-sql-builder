@@ -309,6 +309,9 @@ export class QueryBuilder {
   }
 
   format(formatOptions?: FormatOptions): this | never {
+    if (!formatOptions?.language) {
+      formatOptions = { ...formatOptions, language: 'postgresql' };
+    }
     this._query = format(this._query, formatOptions);
     return this;
   }
