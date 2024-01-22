@@ -1,12 +1,57 @@
 {
+  "name": "ts-sql-builder",
+  "version": "0.0.5",
+  "description": "A SQL query builder that lets you build and have full control over your query strings using a straightforward api",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "build": "npx tsc"
+  },
+  "homepage": "https://github.com/BlaanTeam/ts-query-builder#readme",
   "devDependencies": {
     "nodemon": "^3.0.2",
     "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "sql-formatter": "^15.1.1"
+    "sql-formatter": "^15.0.2"
   },
-  "scripts": {
-    "build": "npx tsc"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlaanTeam/ts-query-builder.git"
+  },
+  "author": {
+    "name": "Blaan Team",
+    "url": "https://github.com/BlaanTeam"
+  },
+  "contributors": [
+    {
+      "name": "Oussama Moussaoui",
+      "url": "https://github.com/os-moussao"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/BlaanTeam/ts-query-builder/issues"
+  },
+  "keywords": [
+    "sql",
+    "query",
+    "builder",
+    "build",
+    "queries",
+    "pg",
+    "postgres",
+    "postgresql",
+    "mysql",
+    "sqlite3",
+    "oracle",
+    "mssql",
+    "querybuilder",
+    "sqlbuilder",
+    "db",
+    "database",
+    "cockroachdb"
+  ],
+  "license": "ISC"
 }
