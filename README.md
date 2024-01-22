@@ -74,4 +74,38 @@ WHERE
   user.age <= 16
 ```
 
-... And more complex stuff like sub-queries, joins, aggregation, grouping, sorting, you name it.
+Perform a join operation:
+
+```ts
+const userWithPosts = createQueryBuilder()
+  .select('user.*')
+  .addSelect({ 'JSON_AGG(post.*)': 'posts' })
+  .from('user')
+  .innerJoin({
+    name: 'post',
+    condition: 'user.id = post."userId"',
+  })
+  .groupBy('user.id')
+  .build()
+  .format({ tabWidth: 4 })
+  .getSql();
+```
+
+```sql
+SELECT
+    user.*,
+    JSON_AGG(post.*) AS posts
+FROM
+    "user" user
+    INNER JOIN "post" post ON (user.id = post."userId")
+GROUP BY
+    user.id
+```
+
+And more usage features like sub-queries, a handful of operations (IN, ALL, ANY, CONCAT, AND, OR), complex joins, sorting, you name it..
+
+For detailed usage examples and API documentation, refer to the [full documentation](https://github.com/BlaanTeam/ts-query-builder/#).
+
+## License
+
+This package is licensed under the [MIT License](https://github.com/BlaanTeam/ts-query-builder/blob/main/LICENSE).
