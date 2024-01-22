@@ -207,7 +207,7 @@ export class QueryBuilder {
 
   private handleWhereConditions() {
     if (this._where.length) {
-      this._query += ` WHERE ${this._where.map((c) => `(${c})`).join(' AND ')}`;
+      this._query += ` WHERE ${this._where.join(' AND ')}`;
     }
   }
 
@@ -280,9 +280,7 @@ export class QueryBuilder {
         }
 
         if (this._having.length) {
-          this._query += ` HAVING ${this._having
-            .map((c) => `(${c})`)
-            .join(' AND ')}`;
+          this._query += ` HAVING ${this._having.join(' AND ')}`;
         }
 
         if (this._order.length) {
