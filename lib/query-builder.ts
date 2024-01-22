@@ -16,7 +16,8 @@ export class QueryBuilder {
   private _offset: number = -1;
   private _limit: number = -1;
   private _joins: JoinTable[] = [];
-  private _raw: string = '';
+  private _rawFront: string = '';
+  private _rawEnd: string = '';
 
   private _query: string = '';
 
@@ -202,8 +203,13 @@ export class QueryBuilder {
       : new QueryBuilder();
   }
 
-  addRawSql(rawSql: string) {
-    this._raw = rawSql;
+  rawFront(rawSql: string) {
+    this._rawFront += rawSql;
+    return this;
+  }
+
+  rawEnd(rawSql: string) {
+    this._rawEnd += rawSql;
     return this;
   }
 
@@ -214,6 +220,10 @@ export class QueryBuilder {
   }
 
   build() {
+    if (this._rawFront) {
+      this._query += `${this._rawFront} `;
+    }
+
     switch (this._queryType) {
       case 'CREATE': {
         this._query += `INSERT INTO ${this._table.name}`;
@@ -305,8 +315,8 @@ export class QueryBuilder {
         }
     }
 
-    if (this._raw) {
-      this._query += ` ${this._raw}`;
+    if (this._rawEnd) {
+      this._query += ` ${this._rawEnd}`;
     }
 
     return this;
@@ -338,7 +348,8 @@ export class QueryBuilder {
     this._offset = -1;
     this._limit = -1;
     this._joins = [];
-    this._raw = '';
+    this._rawFront = '';
+    this._rawEnd = '';
     this._query = '';
     return this;
   }
