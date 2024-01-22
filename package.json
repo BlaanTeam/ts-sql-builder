@@ -57,5 +57,5 @@
     "database",
     "cockroachdb"
   ],
-  "license": "ISC"
+  "license": "MIT"
 }
