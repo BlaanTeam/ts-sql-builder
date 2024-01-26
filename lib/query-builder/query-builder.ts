@@ -1,5 +1,5 @@
 import { format } from 'sql-formatter';
-import { Column, FormatOptions, JoinTable, Table } from './qb.interfaces';
+import { ColumnOptions, FormatOptions, JoinTableOptions, TableOptions } from './qb.interfaces';
 import { JoinType, ORDER } from './qb.enums';
 
 export class QueryBuilder {
@@ -7,15 +7,15 @@ export class QueryBuilder {
   private _insertColumns: string[] = [];
   private _values: any[][] = [];
   private _updatedColumns: Record<string, any> = {};
-  private _fields: Column[] = [];
-  private _table: Table = { name: '' };
+  private _fields: ColumnOptions[] = [];
+  private _table: TableOptions = { name: '' };
   private _where: string[] = [];
   private _groupBy: string[] = [];
   private _having: string[] = [];
   private _order: [string, 'ASC' | 'DESC'][] = [];
   private _offset: number = -1;
   private _limit: number = -1;
-  private _joins: JoinTable[] = [];
+  private _joins: JoinTableOptions[] = [];
   private _rawFront: string = '';
   private _rawEnd: string = '';
 
@@ -170,7 +170,7 @@ export class QueryBuilder {
     return this;
   }
 
-  join(joinTable: JoinTable) {
+  join(joinTable: JoinTableOptions) {
     joinTable.condition ??= 'TRUE';
     joinTable.alias ??= joinTable.name;
 
@@ -183,15 +183,15 @@ export class QueryBuilder {
     return this;
   }
 
-  innerJoin(joinTable: Omit<JoinTable, 'type'>) {
+  innerJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.INNER });
   }
 
-  leftJoin(joinTable: Omit<JoinTable, 'type'>) {
+  leftJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.LEFT });
   }
 
-  rightJoin(joinTable: Omit<JoinTable, 'type'>) {
+  rightJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.RIGHT });
   }
 
