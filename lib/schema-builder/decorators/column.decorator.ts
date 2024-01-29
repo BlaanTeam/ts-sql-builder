@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { ColumnMetadata } from '../sb.interfaces';
-import { COLUMNS_METADATA_KEY } from '../sb.constants';
+import { COLUMNS_METADATA_KEY, PK_METADATA_KEY } from '../sb.constants';
 
 /**
  * Decorator to specify a class property as a table column.
@@ -10,12 +10,25 @@ import { COLUMNS_METADATA_KEY } from '../sb.constants';
  */
 export function Column(columnOptions: ColumnMetadata): PropertyDecorator {
   columnOptions = normalizeColumnOptions(columnOptions);
+
   return (target: Object, propertyKey: string | symbol) => {
     columnOptions.name ??= propertyKey.toString();
+
     const columns: ColumnMetadata[] =
       Reflect.getMetadata(COLUMNS_METADATA_KEY, target.constructor) ?? [];
+
     columns.push(columnOptions);
+
     Reflect.defineMetadata(COLUMNS_METADATA_KEY, columns, target.constructor);
+
+    if (columnOptions.primary) {
+      const primaryKey =
+        Reflect.getMetadata(PK_METADATA_KEY, target.constructor) ?? [];
+
+      primaryKey.push(columnOptions.name);
+
+      Reflect.defineMetadata(PK_METADATA_KEY, primaryKey, target.constructor);
+    }
   };
 }
 
