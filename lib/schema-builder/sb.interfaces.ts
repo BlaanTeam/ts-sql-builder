@@ -20,12 +20,16 @@ export interface IndexMetadata {
 export interface ForeignKeyMetadata {
   /**
    * Define column name of the foreign key
+   *
+   * @required if \@ForeignKey decorator is used on a class.
+   * @optional if \@ForeignKey is used on a property.
+   * @default propertyKey
    */
-  column: string;
+  column?: string;
 
   /**
    * Define which table & column this foreign key references
-   * 
+   *
    * @example
    * reference: 'user(id)'
    */
@@ -79,7 +83,7 @@ export interface ColumnMetadata {
    * @optional Define check constraint.
    */
   check?: string;
-  
+
   /**
    * Define if this column is (or part of) the primary key.
    * Same can be achieved when \@PrimaryKey decorator is used.
