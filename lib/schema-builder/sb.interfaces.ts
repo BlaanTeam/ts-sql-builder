@@ -8,10 +8,25 @@ export interface TableMetadata {
   columns: ColumnMetadata[];
 }
 
+/**
+ * Define Index options
+ */
 export interface IndexMetadata {
+  /**
+   * Define the index's name
+   */
   name: string;
+
+  /**
+   * Define indexable columns
+   */
   columns: string[];
-  unique?: boolean; // default false
+
+  /**
+   * @optional Define index uniqueness
+   * @default false
+   */
+  unique?: boolean;
 }
 
 /**
