@@ -14,10 +14,31 @@ export interface IndexMetadata {
   unique?: boolean; // default false
 }
 
+/**
+ * Define foreign key option
+ */
 export interface ForeignKeyMetadata {
+  /**
+   * Define column name of the foreign key
+   */
   column: string;
+
+  /**
+   * Define which table & column this foreign key references
+   * 
+   * @example
+   * reference: 'user(id)'
+   */
   reference: string;
+
+  /**
+   * @optional Define delete cascade option
+   */
   onDelete?: CascadeType;
+
+  /**
+   * @optional Define update cascade option
+   */
   onUpdate?: CascadeType;
 }
 
