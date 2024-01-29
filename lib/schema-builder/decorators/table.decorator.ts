@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { TABLE_METADATA_KEY } from '../sb.constants';
+import { TABLE_METADATA_KEY, TABLE_REGISTRY } from '../sb.constants';
 
 /**
  * Decorator to specify a class as a database table.
@@ -11,6 +11,7 @@ import { TABLE_METADATA_KEY } from '../sb.constants';
 export function Table(name?: string): ClassDecorator {
   return <T extends Function>(target: T) => {
     const table = name ?? target.name.toLowerCase();
+    TABLE_REGISTRY.push(target);
     Reflect.defineMetadata(TABLE_METADATA_KEY, table, target);
   };
 }
