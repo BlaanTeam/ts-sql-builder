@@ -2,6 +2,16 @@ import 'reflect-metadata';
 import { ForeignKeyMetadata } from '../sb.interfaces';
 import { FKS_METADATA_KEY } from '../sb.constants';
 
+/**
+ * Class & Property decorator to specify a column as a foreign key inside a table.
+ *
+ * @param {ForeignKeyMetadata} fkOptions
+ * Define foreign key options
+ * (make sure to define 'column' property if used as class decorator, otherwise it's optional)
+ *
+ * @returns {ClassDecorator & PropertyDecorator}
+ * The class/property decorator
+ */
 export function ForeignKey(
   fkOptions: ForeignKeyMetadata,
 ): ClassDecorator & PropertyDecorator {
