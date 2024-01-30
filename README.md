@@ -5,6 +5,11 @@ schema builder api making it easy to create & interact with relational databases
 
 Built with [Typescript](https://www.typescriptlang.org/), but can be used in pure [JavaScript](https://en.wikipedia.org/wiki/JavaScript) as well.
 
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Building Queries](#building-queries)
+  - [Schema Generation](#schema-generation)
+
 ## Installation
 
 Install the package using npm:
@@ -240,6 +245,7 @@ buildSchema({ path: './db/schema/db.sql' });
 ```
 
 Generates a single file:
+
 ```
 ./db
 └── schema
