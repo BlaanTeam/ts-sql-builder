@@ -1,7 +1,7 @@
 # SQL Query Builder for Node.js
 
 This npm package provides a versatile SQL query & schema builder for Node.js applications. It supports the creation of SQL queries for common operations like SELECT, INSERT, UPDATE, DELETE and a
-schema builder api making it easy to interact with & create relational databases.
+schema builder api making it easy to create & interact with relational databases.
 
 Built with [Typescript](https://www.typescriptlang.org/), but can be used in pure [JavaScript](https://en.wikipedia.org/wiki/JavaScript) as well.
 
