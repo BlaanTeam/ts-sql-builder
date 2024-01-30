@@ -92,7 +92,7 @@ export interface ColumnMetadata {
   /**
    * @optional Define default value for column.
    */
-  default?: string;
+  default?: any;
 
   /**
    * @optional Define check constraint.
