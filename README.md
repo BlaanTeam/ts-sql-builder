@@ -127,7 +127,6 @@ Important note:
     ```json
     {
       "compilerOptions": {
-        // ...
         "experimentalDecorators": true
       }
     }
