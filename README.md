@@ -1,4 +1,4 @@
-# SQL Query Builder for Node.js
+# SQL Query & Schema Builder for Node.js
 
 A straightforward api for SQL query & schema generation.
 
@@ -118,6 +118,20 @@ GROUP BY
 And more usage features like sub-queries, a handful of operations (IN, ALL, ANY, CONCAT, AND, OR), complex joins, sorting, you name it..
 
 ### Schema Generation
+
+Important note:
+
+- For using schema builder api, you have to enable experimental support for decorators:
+  - using command line: `tsc --experimentalDecorators`
+  - or using compiler options inside `tsconfig.json`:
+    ```json
+    {
+      "compilerOptions": {
+        // ...
+        "experimentalDecorators": true
+      }
+    }
+    ```
 
 Api usage:
 
