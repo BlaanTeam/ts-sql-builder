@@ -34,7 +34,7 @@ export function tableSchema(
     if (_default !== undefined) sql += ` DEFAULT ${normalized(_default)}`;
     sql += ` ${check ? `CHECK (${check})` : ''}`;
 
-    if (index != columns.length - 1) sql += ', ';
+    if (index !== columns.length - 1) sql += ', ';
   });
 
   // Primary key
