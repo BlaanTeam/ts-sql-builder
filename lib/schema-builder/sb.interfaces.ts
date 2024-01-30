@@ -91,6 +91,16 @@ export interface ColumnMetadata {
 
   /**
    * @optional Define default value for column.
+   *
+   * If passed as a function () => string (raw sql), it will take the returned value.
+   * otherwise it will be normalized.
+   *
+   * @example
+   * default: 'default_value' | sql: DEFAULT 'default_value' (normalized with quotes)
+   *
+   * default: 1 | sql: DEFAULT 1 (normalized)
+   *
+   * default: () => 'default_value' | sql: DEFAULT default_value (without quotes)
    */
   default?: any;
 
