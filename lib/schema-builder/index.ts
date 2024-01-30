@@ -1,6 +1,7 @@
 export * from './sb.interfaces';
 export * from './sb.types';
 export * from './decorators';
+export * from './functions';
 export {
   TABLE_METADATA_KEY,
   COLUMNS_METADATA_KEY,
