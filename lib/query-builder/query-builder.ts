@@ -1,6 +1,12 @@
 import { format } from 'sql-formatter';
-import { ColumnOptions, FormatOptions, JoinTableOptions, TableOptions } from './qb.interfaces';
+import {
+  ColumnOptions,
+  FormatOptions,
+  JoinTableOptions,
+  TableOptions,
+} from './qb.interfaces';
 import { JoinType, ORDER } from './qb.enums';
+import { normalized } from '../common';
 
 export class QueryBuilder {
   private _queryType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' = 'READ';
@@ -233,13 +239,7 @@ export class QueryBuilder {
         this._query += ` VALUES `;
 
         const listOfValues = this._values.map((values) => {
-          const formattedValues = values.map((value) => {
-            let stringified = JSON.stringify(value);
-            if (typeof value === 'object') stringified = `'${stringified}'`;
-            if (typeof value === 'string') stringified = `'${value}'`;
-            return stringified;
-          });
-          return `(${formattedValues.join(', ')})`;
+          return `(${values.map((value) => normalized(value)).join(', ')})`;
         });
 
         this._query += `${listOfValues.join(', ')}`;
@@ -250,12 +250,7 @@ export class QueryBuilder {
         this._query += `UPDATE ${this._table.name} SET `;
 
         const data = Object.entries(this._updatedColumns).map(
-          ([column, value]) => {
-            let stringified = JSON.stringify(value);
-            if (typeof value === 'object') stringified = `'${stringified}'`;
-            if (typeof value === 'string') stringified = `'${value}'`;
-            return `"${column}" = ${stringified}`;
-          },
+          ([column, value]) => `"${column}" = ${normalized(value)}`,
         );
 
         this._query += data.join(', ');
