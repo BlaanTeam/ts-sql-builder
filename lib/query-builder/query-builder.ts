@@ -1,12 +1,7 @@
 import { format } from 'sql-formatter';
-import {
-  ColumnOptions,
-  FormatOptions,
-  JoinTableOptions,
-  TableOptions,
-} from './qb.interfaces';
+import { ColumnOptions, JoinTableOptions, TableOptions } from './qb.interfaces';
 import { JoinType, ORDER } from './qb.enums';
-import { normalized } from '../common';
+import { FormatOptions, normalized } from '../common';
 
 export class QueryBuilder {
   private _queryType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' = 'READ';
