@@ -8,5 +8,7 @@
     "skipLibCheck": true,                                /* Skip type checking all .d.ts files. */
     "outDir": "./dist",                                  /* Destination directory for the compiled output */
     "allowSyntheticDefaultImports": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   }
 }

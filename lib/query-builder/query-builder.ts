@@ -1,21 +1,22 @@
 import { format } from 'sql-formatter';
-import { Column, FormatOptions, JoinTable, Table } from './qb.interfaces';
+import { ColumnOptions, JoinTableOptions, TableOptions } from './qb.interfaces';
 import { JoinType, ORDER } from './qb.enums';
+import { FormatOptions, normalized } from '../common';
 
 export class QueryBuilder {
   private _queryType: 'CREATE' | 'READ' | 'UPDATE' | 'DELETE' = 'READ';
   private _insertColumns: string[] = [];
   private _values: any[][] = [];
   private _updatedColumns: Record<string, any> = {};
-  private _fields: Column[] = [];
-  private _table: Table = { name: '' };
+  private _fields: ColumnOptions[] = [];
+  private _table: TableOptions = { name: '' };
   private _where: string[] = [];
   private _groupBy: string[] = [];
   private _having: string[] = [];
   private _order: [string, 'ASC' | 'DESC'][] = [];
   private _offset: number = -1;
   private _limit: number = -1;
-  private _joins: JoinTable[] = [];
+  private _joins: JoinTableOptions[] = [];
   private _rawFront: string = '';
   private _rawEnd: string = '';
 
@@ -170,7 +171,7 @@ export class QueryBuilder {
     return this;
   }
 
-  join(joinTable: JoinTable) {
+  join(joinTable: JoinTableOptions) {
     joinTable.condition ??= 'TRUE';
     joinTable.alias ??= joinTable.name;
 
@@ -183,15 +184,15 @@ export class QueryBuilder {
     return this;
   }
 
-  innerJoin(joinTable: Omit<JoinTable, 'type'>) {
+  innerJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.INNER });
   }
 
-  leftJoin(joinTable: Omit<JoinTable, 'type'>) {
+  leftJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.LEFT });
   }
 
-  rightJoin(joinTable: Omit<JoinTable, 'type'>) {
+  rightJoin(joinTable: Omit<JoinTableOptions, 'type'>) {
     return this.join({ ...joinTable, type: JoinType.RIGHT });
   }
 
@@ -233,13 +234,7 @@ export class QueryBuilder {
         this._query += ` VALUES `;
 
         const listOfValues = this._values.map((values) => {
-          const formattedValues = values.map((value) => {
-            let stringified = JSON.stringify(value);
-            if (typeof value === 'object') stringified = `'${stringified}'`;
-            if (typeof value === 'string') stringified = `'${value}'`;
-            return stringified;
-          });
-          return `(${formattedValues.join(', ')})`;
+          return `(${values.map((value) => normalized(value)).join(', ')})`;
         });
 
         this._query += `${listOfValues.join(', ')}`;
@@ -250,12 +245,7 @@ export class QueryBuilder {
         this._query += `UPDATE ${this._table.name} SET `;
 
         const data = Object.entries(this._updatedColumns).map(
-          ([column, value]) => {
-            let stringified = JSON.stringify(value);
-            if (typeof value === 'object') stringified = `'${stringified}'`;
-            if (typeof value === 'string') stringified = `'${value}'`;
-            return `"${column}" = ${stringified}`;
-          },
+          ([column, value]) => `"${column}" = ${normalized(value)}`,
         );
 
         this._query += data.join(', ');

@@ -19,6 +19,7 @@
     "tsup": "^8.0.1"
   },
   "dependencies": {
+    "reflect-metadata": "^0.2.1",
     "sql-formatter": "^15.0.2"
   },
   "repository": {

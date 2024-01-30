@@ -1,16 +1,14 @@
-import { FormatOptionsWithLanguage } from 'sql-formatter';
-
-export interface Table {
+export interface TableOptions {
   name: string;
   alias?: string;
 }
 
-export interface Column {
+export interface ColumnOptions {
   name: string;
   alias?: string;
 }
 
-export interface JoinTable extends Table {
+export interface JoinTableOptions extends TableOptions {
   type: 'LEFT' | 'RIGHT' | 'INNER';
   condition?: string;
   select?:
@@ -19,5 +17,3 @@ export interface JoinTable extends Table {
     | Record<string, string>
     | (string | Record<string, string>)[];
 }
-
-export interface FormatOptions extends FormatOptionsWithLanguage {}
